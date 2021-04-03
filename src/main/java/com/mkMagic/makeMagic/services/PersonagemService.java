@@ -43,8 +43,12 @@ public class PersonagemService {
     }
 
     public Personagem findById(Long id) throws IdNotFoundException {
-        Optional<Personagem> personagem = personagemRepository.findById(id);
-        return personagem.get();
+        Optional<Personagem> maybePersonagem = personagemRepository.findById(id);
+        if (maybePersonagem.isPresent()){
+            return maybePersonagem.get();
+        } else {
+            throw new IdNotFoundException("Id não existe ou não foi encontrado");
+        }
     }
 
     public boolean verifyHouse(String id) {

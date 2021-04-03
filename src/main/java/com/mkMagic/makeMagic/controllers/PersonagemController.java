@@ -3,6 +3,7 @@ package com.mkMagic.makeMagic.controllers;
 import com.mkMagic.makeMagic.models.Personagem;
 import com.mkMagic.makeMagic.models.PersonagemResponse;
 import com.mkMagic.makeMagic.models.exceptions.HouseNotFoundException;
+import com.mkMagic.makeMagic.models.exceptions.IdNotFoundException;
 import com.mkMagic.makeMagic.services.PersonagemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,13 @@ public class PersonagemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PersonagemResponse> find(@PathVariable(name = "id") Long id) {
-        PersonagemResponse personagemResponse = personagemService.research(id);
-        return ResponseEntity.status(HttpStatus.FOUND).body(personagemResponse);
+    public ResponseEntity<?> find(@PathVariable(name = "id") Long id) {
+        try {
+            PersonagemResponse personagemResponse = personagemService.research(id);
+            return ResponseEntity.status(HttpStatus.FOUND).body(personagemResponse);
+        } catch (IdNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
