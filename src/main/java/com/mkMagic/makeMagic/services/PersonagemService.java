@@ -24,8 +24,8 @@ public class PersonagemService {
         return new PersonagemResponse(personagem);
     }
 
-    public Personagem update(Personagem personagem) {
-        return personagemRepository.save(personagem);
+    public void update(Personagem personagem) {
+        personagemRepository.save(personagem);
     }
 
     public void delete(Long id) {

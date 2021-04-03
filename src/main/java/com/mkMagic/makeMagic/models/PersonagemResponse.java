@@ -1,6 +1,7 @@
 package com.mkMagic.makeMagic.models;
 
 public class PersonagemResponse {
+    private Long id;
     private String name;
     private String role;
     private String school;
@@ -8,11 +9,20 @@ public class PersonagemResponse {
     private String patronus;
 
     public PersonagemResponse(Personagem personagem) {
+        this.id = personagem.getId();
         this.name = personagem.getName();
         this.role = personagem.getRole();
         this.school = personagem.getSchool();
         this.house = personagem.getHouse();
         this.patronus = personagem.getPatronus();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
