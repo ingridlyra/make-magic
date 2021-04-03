@@ -4,11 +4,14 @@ import com.mkMagic.makeMagic.models.Personagem;
 import com.mkMagic.makeMagic.models.PersonagemResponse;
 import com.mkMagic.makeMagic.models.exceptions.HouseNotFoundException;
 import com.mkMagic.makeMagic.models.exceptions.IdNotFoundException;
+import com.mkMagic.makeMagic.models.exceptions.NoRecordsException;
 import com.mkMagic.makeMagic.services.PersonagemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -34,6 +37,16 @@ public class PersonagemController {
             PersonagemResponse personagemResponse = personagemService.research(id);
             return ResponseEntity.status(HttpStatus.FOUND).body(personagemResponse);
         } catch (IdNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> listAll() {
+        try {
+            List<PersonagemResponse> listaPersonagens = personagemService.list();
+            return ResponseEntity.status(HttpStatus.FOUND).body(listaPersonagens);
+        } catch (NoRecordsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

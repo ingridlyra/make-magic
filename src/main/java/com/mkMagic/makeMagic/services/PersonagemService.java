@@ -4,6 +4,7 @@ import com.mkMagic.makeMagic.models.Personagem;
 import com.mkMagic.makeMagic.models.PersonagemResponse;
 import com.mkMagic.makeMagic.models.exceptions.HouseNotFoundException;
 import com.mkMagic.makeMagic.models.exceptions.IdNotFoundException;
+import com.mkMagic.makeMagic.models.exceptions.NoRecordsException;
 import com.mkMagic.makeMagic.repositories.PersonagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -13,16 +14,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonagemService {
     @Autowired
     PersonagemRepository personagemRepository;
 
-    public PersonagemResponse create(Personagem personagem) throws HouseNotFoundException{
+    public PersonagemResponse create(Personagem personagem) throws HouseNotFoundException {
         boolean exist = verifyHouse(personagem.getHouse());
-        if (!exist){
+        if (!exist) {
             throw new HouseNotFoundException(personagem.getHouse());
         }
         Personagem newPersonagem = personagemRepository.save(personagem);
@@ -32,6 +35,14 @@ public class PersonagemService {
     public PersonagemResponse research(Long id) throws IdNotFoundException {
         Personagem personagem = this.findById(id);
         return new PersonagemResponse(personagem);
+    }
+
+    public List<PersonagemResponse> list() {
+        List<PersonagemResponse> personagemResponseList = personagemRepository.findAll().stream().map(PersonagemResponse::new).collect(Collectors.toList());
+        if (personagemResponseList.isEmpty()) {
+            throw new NoRecordsException("Registros não encontrados");
+        }
+        return personagemResponseList;
     }
 
     public void update(Personagem personagem) {
@@ -44,7 +55,7 @@ public class PersonagemService {
 
     public Personagem findById(Long id) throws IdNotFoundException {
         Optional<Personagem> maybePersonagem = personagemRepository.findById(id);
-        if (maybePersonagem.isPresent()){
+        if (maybePersonagem.isPresent()) {
             return maybePersonagem.get();
         } else {
             throw new IdNotFoundException("Id não existe ou não foi encontrado");
