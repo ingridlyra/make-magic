@@ -2,6 +2,7 @@ package com.mkMagic.makeMagic.controllers;
 
 import com.mkMagic.makeMagic.models.Personagem;
 import com.mkMagic.makeMagic.models.PersonagemResponse;
+import com.mkMagic.makeMagic.models.exceptions.HouseNotFoundException;
 import com.mkMagic.makeMagic.services.PersonagemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class PersonagemController {
     PersonagemService personagemService;
 
     @PostMapping
-    public ResponseEntity<PersonagemResponse> create(@RequestBody Personagem personagem) {
+    public ResponseEntity<PersonagemResponse> create(@RequestBody Personagem personagem) throws HouseNotFoundException {
         PersonagemResponse personagemResponse = personagemService.create(personagem);
         return ResponseEntity.status(HttpStatus.CREATED).body(personagemResponse);
     }

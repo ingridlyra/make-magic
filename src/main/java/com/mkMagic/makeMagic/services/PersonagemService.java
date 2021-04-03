@@ -2,6 +2,7 @@ package com.mkMagic.makeMagic.services;
 
 import com.mkMagic.makeMagic.models.Personagem;
 import com.mkMagic.makeMagic.models.PersonagemResponse;
+import com.mkMagic.makeMagic.models.exceptions.HouseNotFoundException;
 import com.mkMagic.makeMagic.models.exceptions.IdNotFoundException;
 import com.mkMagic.makeMagic.repositories.PersonagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,11 @@ public class PersonagemService {
     @Autowired
     PersonagemRepository personagemRepository;
 
-    public PersonagemResponse create(Personagem personagem) {
+    public PersonagemResponse create(Personagem personagem) throws HouseNotFoundException{
+        boolean exist = verifyHouse(personagem.getHouse());
+        if (!exist){
+            throw new HouseNotFoundException();
+        }
         Personagem newPersonagem = personagemRepository.save(personagem);
         return new PersonagemResponse(newPersonagem);
     }
@@ -35,6 +40,11 @@ public class PersonagemService {
     public Personagem findById(Long id) throws IdNotFoundException {
         Optional<Personagem> personagem = personagemRepository.findById(id);
         return personagem.get();
+    }
+
+    public boolean verifyHouse(String id) {
+
+        return false;
     }
 
 }
