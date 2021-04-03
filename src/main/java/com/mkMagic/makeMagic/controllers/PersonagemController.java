@@ -18,9 +18,13 @@ public class PersonagemController {
     PersonagemService personagemService;
 
     @PostMapping
-    public ResponseEntity<PersonagemResponse> create(@RequestBody Personagem personagem) throws HouseNotFoundException {
-        PersonagemResponse personagemResponse = personagemService.create(personagem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(personagemResponse);
+    public ResponseEntity<?> create(@RequestBody Personagem personagem) throws HouseNotFoundException {
+        try {
+            PersonagemResponse personagemResponse = personagemService.create(personagem);
+            return ResponseEntity.status(HttpStatus.CREATED).body(personagemResponse);
+        } catch (HouseNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")

@@ -18,7 +18,7 @@ public class PersonagemService {
     public PersonagemResponse create(Personagem personagem) throws HouseNotFoundException{
         boolean exist = verifyHouse(personagem.getHouse());
         if (!exist){
-            throw new HouseNotFoundException();
+            throw new HouseNotFoundException(personagem.getHouse());
         }
         Personagem newPersonagem = personagemRepository.save(personagem);
         return new PersonagemResponse(newPersonagem);
