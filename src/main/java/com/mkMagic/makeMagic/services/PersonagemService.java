@@ -14,8 +14,9 @@ public class PersonagemService {
     @Autowired
     PersonagemRepository personagemRepository;
 
-    public Personagem create(Personagem personagem) {
-        return personagemRepository.save(personagem);
+    public PersonagemResponse create(Personagem personagem) {
+        Personagem newPersonagem = personagemRepository.save(personagem);
+        return new PersonagemResponse(newPersonagem);
     }
 
     public PersonagemResponse research(Long id) throws IdNotFoundException {
@@ -31,7 +32,7 @@ public class PersonagemService {
         personagemRepository.deleteById(id);
     }
 
-    public Personagem findById(Long id) throws IdNotFoundException{
+    public Personagem findById(Long id) throws IdNotFoundException {
         Optional<Personagem> personagem = personagemRepository.findById(id);
         return personagem.get();
     }
