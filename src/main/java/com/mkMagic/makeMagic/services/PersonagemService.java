@@ -6,7 +6,12 @@ import com.mkMagic.makeMagic.models.exceptions.HouseNotFoundException;
 import com.mkMagic.makeMagic.models.exceptions.IdNotFoundException;
 import com.mkMagic.makeMagic.repositories.PersonagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -43,8 +48,16 @@ public class PersonagemService {
     }
 
     public boolean verifyHouse(String id) {
+        final String uri = "http://us-central1-rh-challenges.cloudfunctions.net/potterApi/houses";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("apikey", "ceb66ae1-5af4-405a-b30d-00d2a5a68b70");
 
-        return false;
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+
+        return response.getBody().contains("\"id\":\"" + id + "\"");
     }
 
 }
