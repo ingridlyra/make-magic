@@ -45,6 +45,17 @@ public class PersonagemService {
         return personagemResponseList;
     }
 
+    public List<PersonagemResponse> listFilter(String houseId) {
+        List<PersonagemResponse> personagemResponseList = personagemRepository.findAll().stream()
+                .map(PersonagemResponse::new)
+                .filter(personagem -> personagem.getHouse().equals(houseId))
+                .collect(Collectors.toList());
+        if (personagemResponseList.isEmpty()) {
+            throw new NoRecordsException("Registros não encontrados");
+        }
+        return personagemResponseList;
+    }
+
     public void update(Personagem personagem) {
         personagemRepository.save(personagem);
     }

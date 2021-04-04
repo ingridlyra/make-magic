@@ -42,9 +42,14 @@ public class PersonagemController {
     }
 
     @GetMapping
-    public ResponseEntity<?> listAll() {
+    public ResponseEntity<?> listAll(@RequestParam (name = "house", required = false) String house) {
         try {
-            List<PersonagemResponse> listaPersonagens = personagemService.list();
+            List<PersonagemResponse> listaPersonagens;
+            if (house != null && !house.isEmpty()) {
+                listaPersonagens = personagemService.listFilter(house);
+            } else {
+                listaPersonagens = personagemService.list();
+            }
             return ResponseEntity.status(HttpStatus.FOUND).body(listaPersonagens);
         } catch (NoRecordsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
