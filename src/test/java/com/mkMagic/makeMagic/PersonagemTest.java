@@ -129,11 +129,30 @@ public class PersonagemTest {
     @Test
     public void researchSuccess() throws HouseNotFoundException {
         //Cenário
+        Long id = 1L;
+        Personagem personagem = new Personagem();
+        personagem.setName("Ingrid Lyra");
+        personagem.setHouse("df01bd60-e3ed-478c-b760-cdbd9afe51fc");
+        personagem.setRole("student");
+        personagem.setPatronus("Cat");
+        personagem.setSchool("Hogwarts School of Witchcraft and Wizardry");
 
+        Mockito.when(personagemRepository.save(Mockito.any(Personagem.class))).thenAnswer(i -> {
+            Personagem personagemToReturn = i.getArgument(0);
+            personagemToReturn.setId(id);
+            return personagemToReturn;
+        } );
+        personagemService.create(personagem);
+
+        Mockito.when(personagemRepository.findById(id)).thenReturn(Optional.of(personagem));
         //Ação
-
+        Personagem personagemFinded = personagemService.findById(id);
         //Verificação
-
+        assertThat(personagemFinded.getName()).isEqualTo(personagem.getName());
+        assertThat(personagemFinded.getHouse()).isEqualTo(personagem.getHouse());
+        assertThat(personagemFinded.getSchool()).isEqualTo(personagem.getSchool());
+        assertThat(personagemFinded.getRole()).isEqualTo(personagem.getRole());
+        assertThat(personagemFinded.getPatronus()).isEqualTo(personagem.getPatronus());
     }
 
 
