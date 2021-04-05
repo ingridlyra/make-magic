@@ -16,6 +16,17 @@ public class Personagem {
     private String house;
     private String patronus;
 
+    public Personagem() { }
+
+    public Personagem(Long id, String name, String role, String school, String house, String patronus) {
+        this.id = id;
+        this.name = name;
+        this.role = role;
+        this.school = school;
+        this.house = house;
+        this.patronus = patronus;
+    }
+
     public Long getId() {
         return id;
     }
