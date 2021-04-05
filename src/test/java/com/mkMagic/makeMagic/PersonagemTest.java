@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mkMagic.makeMagic.models.Personagem;
 import com.mkMagic.makeMagic.models.PersonagemResponse;
 import com.mkMagic.makeMagic.models.exceptions.HouseNotFoundException;
+import com.mkMagic.makeMagic.models.exceptions.IdNotFoundException;
 import com.mkMagic.makeMagic.repositories.PersonagemRepository;
 import com.mkMagic.makeMagic.services.PersonagemService;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +82,7 @@ public class PersonagemTest {
     }
 
     @Test
-    public void listSuccess() throws HouseNotFoundException {
+    public void listSuccess(){
         //Cenário
         List<Personagem> personagemList = new ArrayList<>();
         personagemList.add(new Personagem(1L, "Ana", "Aluna", "Hogwarts School of Witchcraft and Wizardry", "df01bd60-e3ed-478c-b760-cdbd9afe51fc", "Peixe"));
@@ -100,11 +102,28 @@ public class PersonagemTest {
     @Test
     public void deleteSuccess() throws HouseNotFoundException {
         //Cenário
+        Long id = 1L;
+        Personagem personagem = new Personagem();
+        personagem.setName("Ingrid Lyra");
+        personagem.setHouse("df01bd60-e3ed-478c-b760-cdbd9afe51fc");
+        personagem.setRole("student");
+        personagem.setPatronus("Cat");
+        personagem.setSchool("Hogwarts School of Witchcraft and Wizardry");
 
+        Mockito.when(personagemRepository.save(Mockito.any(Personagem.class))).thenAnswer(i -> {
+            Personagem personagemToReturn = i.getArgument(0);
+            personagemToReturn.setId(id);
+            return personagemToReturn;
+        } );
+        personagemService.create(personagem);
+
+        Mockito.when(personagemRepository.findById(id)).thenReturn(Optional.empty());
         //Ação
-
+        personagemService.delete(id);
         //Verificação
-
+        assertThrows(IdNotFoundException.class, () -> {
+            personagemService.findById(id);
+        });
     }
 
     @Test
