@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 public class PersonagemTest {
@@ -32,7 +33,7 @@ public class PersonagemTest {
         personagem.setHouse("df01bd60-e3ed-478c-b760-cdbd9afe51fc");
         personagem.setRole("student");
         personagem.setPatronus("Cat");
-        personagem.setSchool("Slytherin");
+        personagem.setSchool("Hogwarts School of Witchcraft and Wizardry");
 
         Mockito.when(personagemRepository.save(Mockito.any(Personagem.class))).thenAnswer(i -> {
             Personagem personagemToReturn = i.getArgument(0);
@@ -52,10 +53,29 @@ public class PersonagemTest {
     @Test
     public void updateSuccess() throws HouseNotFoundException {
         //Cenário
+        Long id = 1L;
+        Personagem personagem = new Personagem();
+        personagem.setName("Ingrid Lyra");
+        personagem.setHouse("df01bd60-e3ed-478c-b760-cdbd9afe51fc");
+        personagem.setRole("student");
+        personagem.setPatronus("Cat");
+        personagem.setSchool("Hogwarts School of Witchcraft and Wizardry");
 
+        Mockito.when(personagemRepository.save(Mockito.any(Personagem.class))).thenAnswer(i -> {
+            Personagem personagemToReturn = i.getArgument(0);
+            personagemToReturn.setId(id);
+            return personagemToReturn;
+        } );
+        personagemService.create(personagem);
+
+        personagem.setRole("professor");
+
+        Mockito.when(personagemRepository.findById(id)).thenReturn(Optional.of(personagem));
         //Ação
-
+        personagemService.update(personagem);
+        Personagem personagemUpdated = personagemService.findById(id);
         //Verificação
+        assertThat(personagemUpdated.getRole()).isEqualTo("professor");
 
     }
 
